@@ -214,7 +214,7 @@ cards:
       - entity: sensor.water_softener_erie_water_consumption
         name: Water
     stat_types:
-      - sum
+      - change
     period: day
     days_to_show: 7
     chart_type: bar
@@ -245,7 +245,7 @@ cards:
       title: Active Warnings
       icon: mdi:alert
       entities:
-        - entity: sensor.water_softener_erie_warnings
+        - entity: sensor.erie_warnings
           name: Warning Details
           icon: mdi:alert-circle
 
@@ -332,7 +332,7 @@ entities:
   - entity: sensor.water_softener_erie_water_consumption
     name: Water Consumed
 stat_types:
-  - sum
+  - change
 period: day
 days_to_show: 30
 chart_type: bar
@@ -353,7 +353,7 @@ card:
   content: >
     ## ⚠️ Erie Softener Warning
 
-    {{ states('sensor.water_softener_erie_warnings') }}
+    {{ states('sensor.erie_warnings') }}
 ```
 
 ---
