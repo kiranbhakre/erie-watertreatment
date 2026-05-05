@@ -118,7 +118,7 @@ The device will appear under **Settings → Devices & Services** with all sensor
 
 | Entity | Description | Device class |
 |---|---|---|
-| `binary_sensor.erie_watertreatment_low_salt` | On when any warning mentions salt | `problem` |
+| `binary_sensor.erie_watertreatment_salt_warning` | On when any warning mentions "salt" (case-insensitive) | `problem` |
 | `binary_sensor.erie_watertreatment_filter_warning` | On when any warning mentions "filter" | `problem` |
 | `binary_sensor.erie_watertreatment_service_warning` | On when any warning mentions "service" | `problem` |
 | `binary_sensor.erie_watertreatment_error_warning` | On when any warning mentions "error" | `problem` |
@@ -254,7 +254,7 @@ cards:
     title: Warning Sensors
     show_state: true
     entities:
-      - entity: binary_sensor.erie_watertreatment_low_salt
+      - entity: binary_sensor.erie_watertreatment_salt_warning
         name: Low Salt
         icon: mdi:shaker-outline
       - entity: binary_sensor.erie_watertreatment_filter_warning
@@ -396,7 +396,7 @@ pip install -r requirements_test.txt
 pytest tests/ -v
 ```
 
-114 unit tests cover all sensors and binary sensors. No running HA instance is needed — all tests use mocked coordinators.
+120 unit tests cover all sensors and binary sensors. No running HA instance is needed — all tests use mocked coordinators.
 
 ---
 

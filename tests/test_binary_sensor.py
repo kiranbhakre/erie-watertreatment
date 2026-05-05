@@ -37,6 +37,37 @@ def test_device_class_is_problem():
 
 
 # ---------------------------------------------------------------------------
+# ErieWarningBinarySensor — salt
+# ---------------------------------------------------------------------------
+
+def test_salt_true_when_salt_in_description():
+    assert _warning_sensor("salt", "salt_warning",
+                           [{"description": "Low Salt Level"}]).state is True
+
+
+def test_salt_false_when_different_warning():
+    assert _warning_sensor("salt", "salt_warning",
+                           [{"description": "Filter Replacement Needed"}]).state is False
+
+
+def test_salt_false_when_no_warnings():
+    assert _warning_sensor("salt", "salt_warning", []).state is False
+
+
+def test_salt_case_insensitive():
+    assert _warning_sensor("salt", "salt_warning",
+                           [{"description": "SALT LEVEL LOW"}]).state is True
+
+
+def test_salt_unique_id():
+    assert _warning_sensor("salt", "salt_warning", []).unique_id == "device_123_salt_warning"
+
+
+def test_salt_name():
+    assert _warning_sensor("salt", "salt_warning", []).name == "Erie Salt Warning"
+
+
+# ---------------------------------------------------------------------------
 # ErieWarningBinarySensor — filter
 # ---------------------------------------------------------------------------
 

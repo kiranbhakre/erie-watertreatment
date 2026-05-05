@@ -38,11 +38,10 @@ async def async_setup_entry(hass, entry, async_add_entities):
     device_name = entry.data.get(CONF_DEVICE_NAME, "Erie Water Softener")
 
     async_add_entities([
-        # Legacy low-salt sensor — kept for backward compatibility
-        ErieLowSaltBinarySensor(coordinator, device_id, device_name),
-
         # ── Parameterised warning sensors (one per warning category) ──────
-        # Each sensor triggers when the keyword appears in any warning description
+        # Each sensor triggers when the keyword appears in any warning description.
+        # All use case-insensitive matching and carry a unique_id for HA tracking.
+        ErieWarningBinarySensor(coordinator, device_id, "salt",    "salt_warning",    device_name),
         ErieWarningBinarySensor(coordinator, device_id, "filter",  "filter_warning",  device_name),
         ErieWarningBinarySensor(coordinator, device_id, "service", "service_warning", device_name),
         ErieWarningBinarySensor(coordinator, device_id, "error",   "error_warning",   device_name),
