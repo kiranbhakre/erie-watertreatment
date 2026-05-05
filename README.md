@@ -167,16 +167,16 @@ cards:
     title: Erie Water Softener
     icon: mdi:water-pump
     entities:
-      - entity: sensor.water_softener_erie_status_title
+      - entity: sensor.water_softener_erie_status
         name: Status
         icon: mdi:information-outline
-      - entity: sensor.water_softener_erie_remaining_percentage
+      - entity: sensor.water_softener_erie_remaining_capacity
         name: Remaining Capacity
         icon: mdi:percent
-      - entity: sensor.water_softener_erie_remaining_litres
+      - entity: sensor.water_softener_erie_remaining_capacity_l
         name: Remaining Litres
         icon: mdi:water
-      - entity: sensor.water_softener_erie_days_remaining
+      - entity: sensor.water_softener_erie_days_until_regeneration
         name: Days Until Regeneration
         icon: mdi:calendar-clock
       - entity: binary_sensor.water_softener_erie_holiday_mode
@@ -185,7 +185,7 @@ cards:
 
   # ── Capacity gauge ──────────────────────────────────────────────────────────
   - type: gauge
-    entity: sensor.water_softener_erie_remaining_percentage
+    entity: sensor.water_softener_erie_remaining_capacity
     name: Softening Capacity
     min: 0
     max: 100
@@ -280,13 +280,13 @@ type: glance
 title: Erie Softener
 columns: 3
 entities:
-  - entity: sensor.water_softener_erie_status_title
+  - entity: sensor.water_softener_erie_status
     name: Status
     icon: mdi:information-outline
-  - entity: sensor.water_softener_erie_remaining_percentage
+  - entity: sensor.water_softener_erie_remaining_capacity
     name: Capacity %
     icon: mdi:percent
-  - entity: sensor.water_softener_erie_days_remaining
+  - entity: sensor.water_softener_erie_days_until_regeneration
     name: Days Left
     icon: mdi:calendar-clock
   - entity: sensor.water_softener_erie_water_flow_rate
@@ -309,7 +309,7 @@ entities:
 
 ```yaml
 type: gauge
-entity: sensor.water_softener_erie_remaining_percentage
+entity: sensor.water_softener_erie_remaining_capacity
 name: Softening Capacity
 unit: "%"
 min: 0
