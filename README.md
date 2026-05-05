@@ -255,7 +255,7 @@ cards:
     show_state: true
     entities:
       - entity: binary_sensor.erie_watertreatment_salt_warning
-        name: Low Salt
+        name: Salt Warning
         icon: mdi:shaker-outline
       - entity: binary_sensor.erie_watertreatment_filter_warning
         name: Filter
@@ -292,6 +292,9 @@ entities:
   - entity: sensor.erie_watertreatment_water_flow_rate
     name: Flow Rate
     icon: mdi:waves-arrow-right
+  - entity: binary_sensor.erie_watertreatment_salt_warning
+    name: Salt
+    icon: mdi:shaker-outline
   - entity: binary_sensor.erie_watertreatment_any_warning
     name: Warnings
     icon: mdi:bell-alert
