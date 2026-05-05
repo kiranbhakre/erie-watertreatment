@@ -81,7 +81,7 @@ The device will appear under **Settings → Devices & Services** with all sensor
 
 | Entity | Description | Unit |
 |---|---|---|
-| `sensor.erie_watertreatment_status` | Current device status, e.g. `In Service`, `Regenerating` | — |
+| `sensor.erie_watertreatment_status_title` | Current device status, e.g. `In Service`, `Regenerating` | — |
 | `sensor.erie_watertreatment_remaining_percentage` | Remaining softening capacity | % |
 | `sensor.erie_watertreatment_remaining_litres` | Remaining softening capacity | L |
 | `sensor.erie_watertreatment_days_remaining` | Days until the next auto-regeneration (from device firmware) | d |
@@ -167,13 +167,13 @@ cards:
     title: Erie Water Softener
     icon: mdi:water-pump
     entities:
-      - entity: sensor.water_softener_erie_status
+      - entity: sensor.water_softener_erie_status_title
         name: Status
         icon: mdi:information-outline
       - entity: sensor.water_softener_erie_remaining_percentage
         name: Remaining Capacity
         icon: mdi:percent
-      - entity: sensor.water_softener_erie_remaining_capacity_l
+      - entity: sensor.water_softener_erie_remaining_litres
         name: Remaining Litres
         icon: mdi:water
       - entity: sensor.water_softener_erie_days_remaining
@@ -280,7 +280,7 @@ type: glance
 title: Erie Softener
 columns: 3
 entities:
-  - entity: sensor.water_softener_erie_status
+  - entity: sensor.water_softener_erie_status_title
     name: Status
     icon: mdi:information-outline
   - entity: sensor.water_softener_erie_remaining_percentage
