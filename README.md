@@ -167,25 +167,25 @@ cards:
     title: Erie Water Softener
     icon: mdi:water-pump
     entities:
-      - entity: sensor.erie_watertreatment_status_title
+      - entity: sensor.water_softener_erie_status_title
         name: Status
         icon: mdi:information-outline
-      - entity: sensor.erie_watertreatment_remaining_percentage
+      - entity: sensor.water_softener_erie_remaining_percentage
         name: Remaining Capacity
         icon: mdi:percent
-      - entity: sensor.erie_watertreatment_remaining_litres
+      - entity: sensor.water_softener_erie_remaining_capacity_l
         name: Remaining Litres
         icon: mdi:water
-      - entity: sensor.erie_watertreatment_days_remaining
+      - entity: sensor.water_softener_erie_days_remaining
         name: Days Until Regeneration
         icon: mdi:calendar-clock
-      - entity: binary_sensor.erie_watertreatment_holiday_mode
+      - entity: binary_sensor.water_softener_erie_holiday_mode
         name: Holiday / Bypass Mode
         icon: mdi:palm-tree
 
   # ── Capacity gauge ──────────────────────────────────────────────────────────
   - type: gauge
-    entity: sensor.erie_watertreatment_remaining_percentage
+    entity: sensor.water_softener_erie_remaining_percentage
     name: Softening Capacity
     min: 0
     max: 100
@@ -200,10 +200,10 @@ cards:
     title: Water Usage
     icon: mdi:water-pump
     entities:
-      - entity: sensor.erie_watertreatment_water_consumption
+      - entity: sensor.water_softener_erie_water_consumption
         name: Total Consumption (cumulative)
         icon: mdi:counter
-      - entity: sensor.erie_watertreatment_water_flow_rate
+      - entity: sensor.water_softener_erie_water_flow_rate
         name: Current Flow Rate
         icon: mdi:waves-arrow-right
 
@@ -211,7 +211,7 @@ cards:
   - type: statistics-graph
     title: Water Usage — Last 7 Days
     entities:
-      - entity: sensor.erie_watertreatment_water_consumption
+      - entity: sensor.water_softener_erie_water_consumption
         name: Water
     stat_types:
       - sum
@@ -224,13 +224,13 @@ cards:
     title: Maintenance
     icon: mdi:wrench
     entities:
-      - entity: sensor.erie_watertreatment_days_since_regeneration
+      - entity: sensor.water_softener_erie_days_since_regeneration
         name: Days Since Regeneration
         icon: mdi:calendar-refresh
-      - entity: sensor.erie_watertreatment_days_since_maintenance
+      - entity: sensor.water_softener_erie_days_since_maintenance
         name: Days Since Maintenance
         icon: mdi:calendar-check
-      - entity: sensor.erie_watertreatment_regeneration_count
+      - entity: sensor.water_softener_erie_regeneration_count
         name: Total Regenerations
         icon: mdi:counter
 
@@ -238,14 +238,14 @@ cards:
   - type: conditional
     conditions:
       - condition: state
-        entity: binary_sensor.erie_watertreatment_any_warning
+        entity: binary_sensor.water_softener_erie_any_warning
         state: "on"
     card:
       type: entities
       title: Active Warnings
       icon: mdi:alert
       entities:
-        - entity: sensor.erie_watertreatment_warnings
+        - entity: sensor.water_softener_erie_warnings
           name: Warning Details
           icon: mdi:alert-circle
 
@@ -254,19 +254,19 @@ cards:
     title: Warning Sensors
     show_state: true
     entities:
-      - entity: binary_sensor.erie_watertreatment_salt_warning
+      - entity: binary_sensor.water_softener_erie_salt_warning
         name: Salt Warning
         icon: mdi:shaker-outline
-      - entity: binary_sensor.erie_watertreatment_filter_warning
+      - entity: binary_sensor.water_softener_erie_filter_warning
         name: Filter
         icon: mdi:air-filter
-      - entity: binary_sensor.erie_watertreatment_service_warning
+      - entity: binary_sensor.water_softener_erie_service_warning
         name: Service
         icon: mdi:account-wrench
-      - entity: binary_sensor.erie_watertreatment_error_warning
+      - entity: binary_sensor.water_softener_erie_error_warning
         name: Error
         icon: mdi:alert-octagon
-      - entity: binary_sensor.erie_watertreatment_any_warning
+      - entity: binary_sensor.water_softener_erie_any_warning
         name: Any Alert
         icon: mdi:bell-alert
 ```
@@ -280,25 +280,25 @@ type: glance
 title: Erie Softener
 columns: 3
 entities:
-  - entity: sensor.erie_watertreatment_status_title
+  - entity: sensor.water_softener_erie_status_title
     name: Status
     icon: mdi:information-outline
-  - entity: sensor.erie_watertreatment_remaining_percentage
+  - entity: sensor.water_softener_erie_remaining_percentage
     name: Capacity %
     icon: mdi:percent
-  - entity: sensor.erie_watertreatment_days_remaining
+  - entity: sensor.water_softener_erie_days_remaining
     name: Days Left
     icon: mdi:calendar-clock
-  - entity: sensor.erie_watertreatment_water_flow_rate
+  - entity: sensor.water_softener_erie_water_flow_rate
     name: Flow Rate
     icon: mdi:waves-arrow-right
-  - entity: binary_sensor.erie_watertreatment_salt_warning
+  - entity: binary_sensor.water_softener_erie_salt_warning
     name: Salt
     icon: mdi:shaker-outline
-  - entity: binary_sensor.erie_watertreatment_any_warning
+  - entity: binary_sensor.water_softener_erie_any_warning
     name: Warnings
     icon: mdi:bell-alert
-  - entity: binary_sensor.erie_watertreatment_holiday_mode
+  - entity: binary_sensor.water_softener_erie_holiday_mode
     name: Holiday
     icon: mdi:palm-tree
 ```
@@ -309,7 +309,7 @@ entities:
 
 ```yaml
 type: gauge
-entity: sensor.erie_watertreatment_remaining_percentage
+entity: sensor.water_softener_erie_remaining_percentage
 name: Softening Capacity
 unit: "%"
 min: 0
@@ -329,7 +329,7 @@ severity:
 type: statistics-graph
 title: Daily Water Usage
 entities:
-  - entity: sensor.erie_watertreatment_water_consumption
+  - entity: sensor.water_softener_erie_water_consumption
     name: Water Consumed
 stat_types:
   - sum
@@ -346,14 +346,14 @@ chart_type: bar
 type: conditional
 conditions:
   - condition: state
-    entity: binary_sensor.erie_watertreatment_any_warning
+    entity: binary_sensor.water_softener_erie_any_warning
     state: "on"
 card:
   type: markdown
   content: >
     ## ⚠️ Erie Softener Warning
 
-    {{ states('sensor.erie_watertreatment_warnings') }}
+    {{ states('sensor.water_softener_erie_warnings') }}
 ```
 
 ---
