@@ -1,14 +1,14 @@
-# Erie Water Treatment IQ26 — Home Assistant Integration
+# Pentair Water Treatment IQ26 — Home Assistant Integration
 
 <p align="center">
-  <img src="img/logo.png" alt="Erie Water Softener" width="96">
+  <img src="img/logo.png" alt="Pentair Water Softener" width="96">
 </p>
 
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz)
 [![HA Version](https://img.shields.io/badge/Home%20Assistant-2023.1%2B-blue.svg)](https://www.home-assistant.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-A Home Assistant custom integration for **Erie IQ26 water softeners** managed via the **Connect My Softener** app (Erie Connect / Pentair cloud API).
+A Home Assistant custom integration for **Pentair IQ26 water softeners** managed via the **Connect My Softener** app (Erie Connect / Pentair cloud API).
 
 Polls the cloud API every 120 seconds and exposes 15 sensors and 6 binary sensors — including remaining softening capacity, days until regeneration, water consumption for the Energy Dashboard, and per-category warning binary sensors.
 
@@ -22,7 +22,7 @@ Polls the cloud API every 120 seconds and exposes 15 sensors and 6 binary sensor
 |---|---|
 | **Mobile app** | Connect My Softener (iOS / Android) |
 | **Cloud service** | Erie Connect (Pentair) |
-| **Supported device** | Erie IQ26 water softener |
+| **Supported device** | Pentair IQ26 water softener |
 | **Protocol** | Cloud polling every 120 s — no local LAN access required |
 
 This integration uses the same **Erie Connect** cloud account as the Connect My Softener app.
@@ -49,7 +49,7 @@ If your softener is already set up and visible in the app, it works here immedia
 1. Open **HACS** in Home Assistant → **Integrations**.
 2. Click the ⋮ menu → **Custom repositories**.
 3. Add `https://github.com/kiranbhakre/erie-watertreatment` with category **Integration**.
-4. Search for **Erie Water Treatment IQ26** and click **Download**.
+4. Search for **Pentair Water Treatment IQ26** and click **Download**.
 5. Restart Home Assistant.
 
 ### Option B — Manual
@@ -66,7 +66,7 @@ If your softener is already set up and visible in the app, it works here immedia
 ## Setup
 
 1. Go to **Settings → Devices & Services → Add Integration**.
-2. Search for **Erie Water Treatment IQ26**.
+2. Search for **Pentair Water Treatment IQ26**.
 3. Enter your **Erie Connect** (Pentair) email and password.
    > 💡 Use the same email and password you use to log in to the **Connect My Softener** app.
 4. The integration authenticates and selects the first active device automatically.
@@ -152,7 +152,7 @@ This sensor uses `device_class: water` and `state_class: total_increasing`, whic
 ## Lovelace Cards
 
 Copy-paste any of the cards below into **Dashboard → Edit → Add Card → Manual**.  
-> Verify entity IDs first: **Settings → Devices & Services → Erie Water Treatment IQ26 → entities**
+> Verify entity IDs first: **Settings → Devices & Services → Pentair Water Treatment IQ26 → entities**
 
 ---
 
@@ -164,7 +164,7 @@ cards:
 
   # ── Status & Capacity ───────────────────────────────────────────────────────
   - type: entities
-    title: Erie Water Softener
+    title: Pentair Water Softener
     icon: mdi:water-pump
     entities:
       - entity: sensor.water_softener_erie_status
@@ -351,7 +351,7 @@ conditions:
 card:
   type: markdown
   content: >
-    ## ⚠️ Erie Softener Warning
+    ## ⚠️ Pentair Softener Warning
 
     {{ states('sensor.erie_warnings') }}
 ```

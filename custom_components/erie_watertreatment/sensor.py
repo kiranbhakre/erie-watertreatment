@@ -58,8 +58,8 @@ def _device_info(device_id, device_name, coordinator=None):
     info = {
         # Unique identifier for the device in HA's device registry
         "identifiers": {(DOMAIN, str(device_id))},
-        "name": device_name or "Erie Water Softener",
-        "manufacturer": "Erie / Pentair",
+        "name": device_name or "Pentair Water Softener",
+        "manufacturer": "Pentair",
         "model": "IQ26",
     }
     if coordinator and coordinator.data:
@@ -89,7 +89,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
     coordinator = await get_coordinator(hass)
     device_id = entry.data[CONF_DEVICE_ID]
-    device_name = entry.data.get(CONF_DEVICE_NAME, "Erie Water Softener")
+    device_name = entry.data.get(CONF_DEVICE_NAME, "Pentair Water Softener")
 
     entities = [
         # ── Energy Dashboard (cumulative total) ──────────────────────────
@@ -148,7 +148,7 @@ class ErieWaterConsumptionSensor(SensorEntity):
 
     @property
     def name(self):
-        return "Erie Water Consumption"
+        return "Pentair Water Consumption"
 
     @property
     def device_info(self):
@@ -202,7 +202,7 @@ class ErieWaterFlowRateSensor(SensorEntity):
 
     @property
     def name(self):
-        return "Erie Water Flow Rate"
+        return "Pentair Water Flow Rate"
 
     @property
     def device_info(self):
@@ -261,8 +261,8 @@ class ErieVolumeIncreaseSensor(Entity):
 
     @property
     def name(self):
-        # Friendly name: "Erie Flow" (title-cased from sensor_name)
-        return "Erie " + self.sensor_name.replace("_", " ").title()
+        # Friendly name: "Pentair Flow" (title-cased from sensor_name)
+        return "Pentair " + self.sensor_name.replace("_", " ").title()
 
     @property
     def device_info(self):
@@ -316,7 +316,7 @@ class ErieWarning(Entity):
 
     @property
     def name(self):
-        return "Erie Warnings"
+        return "Pentair Warnings"
 
     @property
     def device_info(self):
@@ -358,8 +358,8 @@ class ErieStatusSensor(Entity):
 
     @property
     def name(self):
-        # Friendly name: "Erie Last Regeneration", "Erie Total Volume", etc.
-        return "Erie " + self.info_type.replace("_", " ").title()
+        # Friendly name: "Pentair Last Regeneration", "Erie Total Volume", etc.
+        return "Pentair " + self.info_type.replace("_", " ").title()
 
     @property
     def device_info(self):
@@ -408,7 +408,7 @@ class ErieDaysSinceRegenerationSensor(SensorEntity):
 
     @property
     def name(self):
-        return "Erie Days Since Regeneration"
+        return "Pentair Days Since Regeneration"
 
     @property
     def device_info(self):
@@ -459,7 +459,7 @@ class ErieDaysSinceMaintenanceSensor(SensorEntity):
 
     @property
     def name(self):
-        return "Erie Days Since Maintenance"
+        return "Pentair Days Since Maintenance"
 
     @property
     def device_info(self):
@@ -512,7 +512,7 @@ class ErieRegenerationCountSensor(SensorEntity):
 
     @property
     def name(self):
-        return "Erie Regeneration Count"
+        return "Pentair Regeneration Count"
 
     @property
     def device_info(self):
@@ -558,7 +558,7 @@ class ErieStatusTitleSensor(SensorEntity):
 
     @property
     def name(self):
-        return "Erie Status"
+        return "Pentair Status"
 
     @property
     def device_info(self):
@@ -598,7 +598,7 @@ class ErieRemainingPercentageSensor(SensorEntity):
 
     @property
     def name(self):
-        return "Erie Remaining Capacity %"
+        return "Pentair Remaining Capacity %"
 
     @property
     def device_info(self):
@@ -645,7 +645,7 @@ class ErieRemainingLitresSensor(SensorEntity):
 
     @property
     def name(self):
-        return "Erie Remaining Capacity L"
+        return "Pentair Remaining Capacity L"
 
     @property
     def device_info(self):
@@ -693,7 +693,7 @@ class ErieDaysRemainingSensor(SensorEntity):
 
     @property
     def name(self):
-        return "Erie Days Until Regeneration"
+        return "Pentair Days Until Regeneration"
 
     @property
     def device_info(self):

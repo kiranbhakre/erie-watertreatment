@@ -64,7 +64,7 @@ def test_salt_unique_id():
 
 
 def test_salt_name():
-    assert _warning_sensor("salt", "salt_warning", []).name == "Erie Salt Warning"
+    assert _warning_sensor("salt", "salt_warning", []).name == "Pentair Salt Warning"
 
 
 # ---------------------------------------------------------------------------

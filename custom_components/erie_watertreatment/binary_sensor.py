@@ -35,7 +35,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     _LOGGER.debug(f"{DOMAIN}: binary_sensor: async_setup_entry: {entry}")
     coordinator = await get_coordinator(hass)
     device_id = entry.data[CONF_DEVICE_ID]
-    device_name = entry.data.get(CONF_DEVICE_NAME, "Erie Water Softener")
+    device_name = entry.data.get(CONF_DEVICE_NAME, "Pentair Water Softener")
 
     async_add_entities([
         # ── Parameterised warning sensors (one per warning category) ──────
@@ -74,7 +74,7 @@ class ErieLowSaltBinarySensor(Entity):
 
     @property
     def name(self):
-        return "Erie Low Salt"
+        return "Pentair Low Salt"
 
     @property
     def device_class(self):
@@ -130,8 +130,8 @@ class ErieWarningBinarySensor(Entity):
 
     @property
     def name(self):
-        # Friendly name: "Erie Filter Warning", "Erie Service Warning", etc.
-        return "Erie " + self._sensor_name.replace("_", " ").title()
+        # Friendly name: "Pentair Filter Warning", "Erie Service Warning", etc.
+        return "Pentair " + self._sensor_name.replace("_", " ").title()
 
     @property
     def device_class(self):
@@ -176,7 +176,7 @@ class ErieAnyWarningBinarySensor(Entity):
 
     @property
     def name(self):
-        return "Erie Any Warning"
+        return "Pentair Any Warning"
 
     @property
     def device_class(self):
@@ -220,7 +220,7 @@ class ErieHolidayModeBinarySensor(Entity):
 
     @property
     def name(self):
-        return "Erie Holiday Mode"
+        return "Pentair Holiday Mode"
 
     @property
     def device_class(self):

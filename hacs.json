@@ -1,5 +1,5 @@
 {
-  "name": "Erie Water Treatment IQ26",
+  "name": "Pentair Water Treatment IQ26",
   "category": "integration",
   "documentation": "https://github.com/kiranbhakre/erie-watertreatment",
   "homeassistant": "2023.1.0",

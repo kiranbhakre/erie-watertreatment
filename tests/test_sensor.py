@@ -265,7 +265,7 @@ def test_days_since_regen_state_class():
 
 
 def test_days_since_regen_name():
-    assert _regen_days_sensor().name == "Erie Days Since Regeneration"
+    assert _regen_days_sensor().name == "Pentair Days Since Regeneration"
 
 
 # ---------------------------------------------------------------------------
@@ -317,7 +317,7 @@ def test_days_since_maint_state_class():
 
 
 def test_days_since_maint_name():
-    assert _maint_days_sensor().name == "Erie Days Since Maintenance"
+    assert _maint_days_sensor().name == "Pentair Days Since Maintenance"
 
 
 # ---------------------------------------------------------------------------
@@ -358,7 +358,7 @@ def test_regen_count_no_unit():
 
 
 def test_regen_count_name():
-    assert _regen_count_sensor().name == "Erie Regeneration Count"
+    assert _regen_count_sensor().name == "Pentair Regeneration Count"
 
 
 # ---------------------------------------------------------------------------
@@ -391,7 +391,7 @@ def test_status_title_unique_id():
 
 
 def test_status_title_name():
-    assert _status_title_sensor().name == "Erie Status"
+    assert _status_title_sensor().name == "Pentair Status"
 
 
 # ---------------------------------------------------------------------------
@@ -428,7 +428,7 @@ def test_remaining_pct_unit():
 
 
 def test_remaining_pct_name():
-    assert _pct_sensor().name == "Erie Remaining Capacity %"
+    assert _pct_sensor().name == "Pentair Remaining Capacity %"
 
 
 # ---------------------------------------------------------------------------
@@ -465,7 +465,7 @@ def test_remaining_litres_unit():
 
 
 def test_remaining_litres_name():
-    assert _litres_sensor().name == "Erie Remaining Capacity L"
+    assert _litres_sensor().name == "Pentair Remaining Capacity L"
 
 
 # ---------------------------------------------------------------------------
@@ -502,4 +502,4 @@ def test_days_remaining_unit():
 
 
 def test_days_remaining_name():
-    assert _days_remaining_sensor().name == "Erie Days Until Regeneration"
+    assert _days_remaining_sensor().name == "Pentair Days Until Regeneration"
