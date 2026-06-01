@@ -1,12 +1,13 @@
 {
   "domain": "erie_watertreatment",
   "name": "Pentair Water Treatment IQ26",
-  "version": "0.1.0b6",
+  "version": "0.1.0b7",
   "config_flow": true,
   "iot_class": "cloud_polling",
   "documentation": "https://github.com/kiranbhakre/erie-watertreatment",
   "issue_tracker": "https://github.com/kiranbhakre/erie-watertreatment/issues",
   "dependencies": [],
   "codeowners": ["@kiranbhakre"],
-  "requirements": ["erie-connect==0.4.4"]
+  "requirements": ["erie-connect==0.4.4"],
+  "loggers": ["custom_components.erie_watertreatment", "erie_connect"]
 }

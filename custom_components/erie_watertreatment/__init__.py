@@ -33,7 +33,6 @@ from .const import (
 PLATFORMS = ["sensor", "binary_sensor"]
 
 _LOGGER = logging.getLogger(__name__)
-logging.getLogger("urllib3").setLevel(logging.CRITICAL)
 
 CONFIG_SCHEMA = vol.Schema(
     {DOMAIN: vol.Schema(vol.All(cv.ensure_list, [vol.Schema({vol.Required(CONF_ACCESS_TOKEN): cv.string})]))},
