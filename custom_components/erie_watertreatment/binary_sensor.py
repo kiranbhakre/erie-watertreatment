@@ -33,7 +33,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     keywords so each warning category gets its own binary sensor.
     """
     _LOGGER.debug(f"{DOMAIN}: binary_sensor: async_setup_entry: {entry}")
-    coordinator = await get_coordinator(hass)
+    coordinator = await get_coordinator(hass, entry)
     device_id = entry.data[CONF_DEVICE_ID]
     device_name = entry.data.get(CONF_DEVICE_NAME, "Pentair Water Softener")
 

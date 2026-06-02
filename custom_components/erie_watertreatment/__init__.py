@@ -2,7 +2,6 @@
 
 import asyncio
 import logging
-from datetime import timedelta
 
 import async_timeout
 import homeassistant.helpers.config_validation as cv
@@ -59,33 +58,34 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         ),
         ErieConnect.Device(entry.data[CONF_DEVICE_ID], entry.data[CONF_DEVICE_NAME]),
     )
+    # The erie-connect library hardcodes _debugmode=True and uses print() for
+    # all debug output — it cannot be controlled via HA's logger config.
+    # Disable it here to prevent STDOUT spam in HA logs.
+    api._debugmode = False
 
-    await create_coordinator(hass, api, config_entry=entry)
+    await create_coordinator(hass, entry, api)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
-    unload_ok = all(
-        await asyncio.gather(
-            *[
-                hass.config_entries.async_forward_entry_unload(entry, component)
-                for component in PLATFORMS
-            ]
-        )
-    )
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    if unload_ok and DOMAIN in hass.data:
+        hass.data[DOMAIN].pop(entry.entry_id, None)
+        if not hass.data[DOMAIN]:
+            hass.data.pop(DOMAIN)
     return unload_ok
 
 
-async def get_coordinator(hass):
-    return hass.data[DOMAIN]
+async def get_coordinator(hass, entry):
+    """Return the DataUpdateCoordinator for the given config entry."""
+    return hass.data[DOMAIN][entry.entry_id][COORDINATOR]
 
 
-async def create_coordinator(hass, api, config_entry=None):
-    """Create (or return existing) data update coordinator."""
-    if DOMAIN in hass.data:
-        return hass.data[DOMAIN]
+async def create_coordinator(hass, entry, api):
+    """Create a per-entry data update coordinator."""
+    hass.data.setdefault(DOMAIN, {})
 
     async def async_fetch_info():
         try:
@@ -111,17 +111,18 @@ async def create_coordinator(hass, api, config_entry=None):
         except Exception:
             raise SensorUpdateFailed
 
-    hass.data[DOMAIN] = DataUpdateCoordinator(
+    coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
-        config_entry=config_entry,
+        config_entry=entry,
         name=DOMAIN,
         update_method=async_fetch_info,
         update_interval=COORDINATOR_UPDATE_INTERVAL,
     )
 
-    await hass.data[DOMAIN].async_refresh()
-    return hass.data[DOMAIN]
+    hass.data[DOMAIN][entry.entry_id] = {COORDINATOR: coordinator, API: api}
+    await coordinator.async_refresh()
+    return coordinator
 
 
 class SensorUpdateFailed(exceptions.HomeAssistantError):
