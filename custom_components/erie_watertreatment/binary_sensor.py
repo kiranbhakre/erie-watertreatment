@@ -5,12 +5,12 @@ They derive their on/off state from the 'warnings' list or specific
 status flags in coordinator.data — no additional API calls are made.
 
 Binary sensor overview:
-    ErieLowSaltBinarySensor      – on when any warning mentions "Salt"
-    ErieWarningBinarySensor      – parameterised; on when keyword found in warnings
+    ErieWarningBinarySensor      – parameterised; on when any alias found in warnings
     ErieAnyWarningBinarySensor   – on when the warnings list is non-empty
     ErieHolidayModeBinarySensor  – on when the softener is in bypass/holiday mode
 """
 import logging
+from typing import Iterable, Union
 
 from homeassistant.helpers.entity import Entity
 
@@ -22,6 +22,25 @@ _LOGGER = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
+# Warning keyword aliases per category
+# ---------------------------------------------------------------------------
+# The Pentair/Erie cloud returns warning descriptions in the account's
+# configured language, so English-only substring matching misses users with
+# a non-English locale (see issue #4). Each tuple lists lowercase substrings
+# that indicate the given warning category across supported locales.
+# Add new locales here — no other code changes needed.
+
+SALT_KEYWORDS = ("salt", "sale", "zout", "sel", "salz", "sól", "sal")
+FILTER_KEYWORDS = ("filter", "filtro", "filtre", "filtr")
+SERVICE_KEYWORDS = (
+    "service", "servizio", "assistenza", "manutenzione",
+    "onderhoud", "entretien", "wartung", "mantenimiento",
+    "servicio", "serwis", "konserwacja",
+)
+ERROR_KEYWORDS = ("error", "errore", "erreur", "fout", "fehler", "błąd")
+
+
+# ---------------------------------------------------------------------------
 # Entry-point: registers all binary sensor entities when the integration loads
 # ---------------------------------------------------------------------------
 
@@ -29,8 +48,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
     """Set up all Erie binary sensor entities from a config entry.
 
     Called once by HA after async_setup_entry in __init__.py.
-    Three ErieWarningBinarySensor instances are created with different
-    keywords so each warning category gets its own binary sensor.
+    Four ErieWarningBinarySensor instances are created, one per warning
+    category, each with a multi-language alias list.
     """
     _LOGGER.debug(f"{DOMAIN}: binary_sensor: async_setup_entry: {entry}")
     coordinator = await get_coordinator(hass, entry)
@@ -39,12 +58,12 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
     async_add_entities([
         # ── Parameterised warning sensors (one per warning category) ──────
-        # Each sensor triggers when the keyword appears in any warning description.
-        # All use case-insensitive matching and carry a unique_id for HA tracking.
-        ErieWarningBinarySensor(coordinator, device_id, "salt",    "salt_warning",    device_name),
-        ErieWarningBinarySensor(coordinator, device_id, "filter",  "filter_warning",  device_name),
-        ErieWarningBinarySensor(coordinator, device_id, "service", "service_warning", device_name),
-        ErieWarningBinarySensor(coordinator, device_id, "error",   "error_warning",   device_name),
+        # Each sensor triggers when any of the alias substrings appears in
+        # a warning description. Matching is case-insensitive.
+        ErieWarningBinarySensor(coordinator, device_id, SALT_KEYWORDS,    "salt_warning",    device_name),
+        ErieWarningBinarySensor(coordinator, device_id, FILTER_KEYWORDS,  "filter_warning",  device_name),
+        ErieWarningBinarySensor(coordinator, device_id, SERVICE_KEYWORDS, "service_warning", device_name),
+        ErieWarningBinarySensor(coordinator, device_id, ERROR_KEYWORDS,   "error_warning",   device_name),
 
         # ── Catch-all: on when ANY warning is present ─────────────────────
         ErieAnyWarningBinarySensor(coordinator, device_id, device_name),
@@ -55,71 +74,35 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
 
 # ---------------------------------------------------------------------------
-# Legacy binary sensor — kept for backward compatibility
-# ---------------------------------------------------------------------------
-
-class ErieLowSaltBinarySensor(Entity):
-    """On (True) when any active warning description contains the word 'Salt'.
-
-    This was the first binary sensor added to the integration.  It is kept
-    as-is so existing automations don't break.  New installations should
-    prefer ErieWarningBinarySensor(keyword='salt') which is case-insensitive.
-    """
-
-    def __init__(self, coordinator, device_id="", device_name=""):
-        self.coordinator = coordinator
-        self.info_type = "low_salt"
-        self._device_id = device_id
-        self._device_name = device_name
-
-    @property
-    def name(self):
-        return "Pentair Low Salt"
-
-    @property
-    def device_class(self):
-        # "problem" makes HA display the sensor as a red alert when on
-        return "problem"
-
-    @property
-    def device_info(self):
-        """Link this entity to the Erie device page in the HA UI."""
-        return _device_info(self._device_id, self._device_name, self.coordinator)
-
-    @property
-    def state(self):
-        """Return True when any active warning mentions salt, else False."""
-        status = self.coordinator.data
-        if status is None or not status["warnings"]:
-            return False
-        # Case-sensitive "Salt" match — preserved from the original implementation
-        return any("Salt" in w["description"] for w in status["warnings"])
-
-
-# ---------------------------------------------------------------------------
 # Parameterised warning binary sensor — one instance per warning category
 # ---------------------------------------------------------------------------
 
 class ErieWarningBinarySensor(Entity):
-    """On (True) when any warning description contains the given keyword.
-
-    The keyword match is case-insensitive so 'FILTER CLOGGED' triggers
-    a sensor created with keyword='filter'.  Multiple instances of this
-    class are registered in async_setup_entry for different categories
-    (filter, service, error).  Custom categories can be added in code.
+    """On (True) when any warning description contains one of the aliases.
 
     Args:
         coordinator:  DataUpdateCoordinator shared by all Erie entities.
         device_id:    Erie device ID — used to build the unique_id.
-        keyword:      Substring to look for in warning descriptions (case-insensitive).
+        keywords:     Substring alias(es) to look for in warning descriptions.
+                      Accepts a single string or an iterable of strings for
+                      multi-language support. Matching is case-insensitive.
         sensor_name:  Suffix for the entity name and unique_id.
         device_name:  Human-readable device name shown in the HA device page.
     """
 
-    def __init__(self, coordinator, device_id, keyword: str, sensor_name: str, device_name=""):
+    def __init__(
+        self,
+        coordinator,
+        device_id,
+        keywords: Union[str, Iterable[str]],
+        sensor_name: str,
+        device_name: str = "",
+    ):
         self.coordinator = coordinator
         self._device_id = device_id
-        self._keyword = keyword.lower()     # normalise once at construction time
+        if isinstance(keywords, str):
+            keywords = (keywords,)
+        self._keywords = tuple(k.lower() for k in keywords)
         self._sensor_name = sensor_name
         self._device_name = device_name
 
@@ -144,14 +127,15 @@ class ErieWarningBinarySensor(Entity):
 
     @property
     def state(self):
-        """Return True when any warning description contains the keyword."""
+        """Return True when any warning description contains any alias."""
         data = self.coordinator.data
         if data is None or not data["warnings"]:
             return False
-        return any(
-            self._keyword in w["description"].lower()
-            for w in data["warnings"]
-        )
+        for w in data["warnings"]:
+            desc = str(w.get("description", "")).lower()
+            if any(kw in desc for kw in self._keywords):
+                return True
+        return False
 
 
 # ---------------------------------------------------------------------------

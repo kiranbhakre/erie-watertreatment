@@ -93,6 +93,17 @@ async def create_coordinator(hass, entry, api):
                 response = await hass.async_add_executor_job(api.info)
                 response_dashboard = await hass.async_add_executor_job(api.dashboard)
             status = response_dashboard.content.get("status", {})
+            # Log raw warnings payload at DEBUG so non-English users can
+            # capture the exact description strings their device emits
+            # (see issue #4). Enable in HA:
+            #   logger:
+            #     logs:
+            #       custom_components.erie_watertreatment: debug
+            _LOGGER.debug(
+                "%s: dashboard warnings payload: %r",
+                DOMAIN,
+                response_dashboard.content.get("warnings"),
+            )
             return {
                 "last_regeneration": response.content["last_regeneration"],
                 "nr_regenerations": response.content["nr_regenerations"],

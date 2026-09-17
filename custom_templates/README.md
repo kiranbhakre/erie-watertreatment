@@ -64,10 +64,10 @@ The integration automatically provides a sensor that is fully compatible with th
 
 | Entity ID | Description |
 |---|---|
-| `binary_sensor.erie_watertreatment_low_salt` | On when any warning mentions "Salt" |
-| `binary_sensor.erie_watertreatment_filter_warning` | On when any warning mentions "filter" |
-| `binary_sensor.erie_watertreatment_service_warning` | On when any warning mentions "service" |
-| `binary_sensor.erie_watertreatment_error_warning` | On when any warning mentions "error" |
+| `binary_sensor.erie_watertreatment_salt_warning` | On when any warning mentions salt (multi-language) |
+| `binary_sensor.erie_watertreatment_filter_warning` | On when any warning mentions filter (multi-language) |
+| `binary_sensor.erie_watertreatment_service_warning` | On when any warning mentions service/maintenance (multi-language) |
+| `binary_sensor.erie_watertreatment_error_warning` | On when any warning mentions error (multi-language) |
 | `binary_sensor.erie_watertreatment_any_warning` | On when any warning is active |
 | `binary_sensor.erie_watertreatment_holiday_mode` | On when device is in holiday/bypass mode |
 
@@ -150,7 +150,7 @@ cards:
     cards:
 
       - type: entity
-        entity: binary_sensor.erie_watertreatment_low_salt
+        entity: binary_sensor.erie_watertreatment_salt_warning
         name: Low Salt
         icon: mdi:shaker-outline
         state_color: true
@@ -263,7 +263,7 @@ cards:
     title: Warning Sensors
     show_state: true
     entities:
-      - entity: binary_sensor.erie_watertreatment_low_salt
+      - entity: binary_sensor.erie_watertreatment_salt_warning
         name: Salt
       - entity: binary_sensor.erie_watertreatment_filter_warning
         name: Filter

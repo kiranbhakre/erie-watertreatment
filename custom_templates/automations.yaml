@@ -10,8 +10,8 @@
   description: "Notify when the softener reports low salt"
   trigger:
     - platform: state
-      entity_id: binary_sensor.erie_watertreatment_low_salt
-      to: "True"
+      entity_id: binary_sensor.erie_watertreatment_salt_warning
+      to: "on"
   condition: []
   action:
     - service: notify.mobile_app_yourphone
