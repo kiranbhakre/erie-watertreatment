@@ -1,109 +1,130 @@
 from unittest.mock import MagicMock
 
 from custom_components.erie_watertreatment.binary_sensor import (
+    ERROR_KEYWORDS,
+    FILTER_KEYWORDS,
+    SALT_KEYWORDS,
+    SERVICE_KEYWORDS,
     ErieAnyWarningBinarySensor,
     ErieHolidayModeBinarySensor,
-    ErieLowSaltBinarySensor,
     ErieWarningBinarySensor,
 )
 
 
-def _sensor(warnings):
+def _warning_sensor(keywords, sensor_name, warnings):
     c = MagicMock()
     c.data = {"warnings": warnings}
-    return ErieLowSaltBinarySensor(c)
-
-
-def test_low_salt_true_when_salt_in_description():
-    assert _sensor([{"description": "Low Salt Level"}]).state is True
-
-
-def test_low_salt_false_when_no_salt_in_description():
-    assert _sensor([{"description": "Filter Replacement Needed"}]).state is False
-
-
-def test_low_salt_false_when_no_warnings():
-    assert _sensor([]).state is False
-
-
-def test_low_salt_false_when_data_is_none():
-    c = MagicMock()
-    c.data = None
-    assert ErieLowSaltBinarySensor(c).state is False
-
-
-def test_device_class_is_problem():
-    assert _sensor([]).device_class == "problem"
+    return ErieWarningBinarySensor(c, "device_123", keywords, sensor_name)
 
 
 # ---------------------------------------------------------------------------
-# ErieWarningBinarySensor — salt
+# ErieWarningBinarySensor — salt (English + backward-compat string keyword)
 # ---------------------------------------------------------------------------
 
 def test_salt_true_when_salt_in_description():
-    assert _warning_sensor("salt", "salt_warning",
+    assert _warning_sensor(SALT_KEYWORDS, "salt_warning",
                            [{"description": "Low Salt Level"}]).state is True
 
 
 def test_salt_false_when_different_warning():
-    assert _warning_sensor("salt", "salt_warning",
+    assert _warning_sensor(SALT_KEYWORDS, "salt_warning",
                            [{"description": "Filter Replacement Needed"}]).state is False
 
 
 def test_salt_false_when_no_warnings():
-    assert _warning_sensor("salt", "salt_warning", []).state is False
+    assert _warning_sensor(SALT_KEYWORDS, "salt_warning", []).state is False
 
 
 def test_salt_case_insensitive():
-    assert _warning_sensor("salt", "salt_warning",
+    assert _warning_sensor(SALT_KEYWORDS, "salt_warning",
                            [{"description": "SALT LEVEL LOW"}]).state is True
 
 
 def test_salt_unique_id():
-    assert _warning_sensor("salt", "salt_warning", []).unique_id == "device_123_salt_warning"
+    assert _warning_sensor(SALT_KEYWORDS, "salt_warning", []).unique_id == "device_123_salt_warning"
 
 
 def test_salt_name():
-    assert _warning_sensor("salt", "salt_warning", []).name == "Pentair Salt Warning"
+    assert _warning_sensor(SALT_KEYWORDS, "salt_warning", []).name == "Pentair Salt Warning"
+
+
+def test_warning_sensor_accepts_bare_string_keyword():
+    """Backward compat: a single string keyword still works."""
+    assert _warning_sensor("salt", "salt_warning",
+                           [{"description": "Low Salt Level"}]).state is True
+
+
+# ---------------------------------------------------------------------------
+# ErieWarningBinarySensor — salt localized (issue #4)
+# ---------------------------------------------------------------------------
+
+def test_salt_matches_italian():
+    assert _warning_sensor(SALT_KEYWORDS, "salt_warning",
+                           [{"description": "Livello sale basso"}]).state is True
+
+
+def test_salt_matches_dutch():
+    assert _warning_sensor(SALT_KEYWORDS, "salt_warning",
+                           [{"description": "Zoutniveau laag"}]).state is True
+
+
+def test_salt_matches_french():
+    assert _warning_sensor(SALT_KEYWORDS, "salt_warning",
+                           [{"description": "Niveau de sel bas"}]).state is True
+
+
+def test_salt_matches_german():
+    assert _warning_sensor(SALT_KEYWORDS, "salt_warning",
+                           [{"description": "Salz nachfüllen"}]).state is True
+
+
+def test_salt_matches_spanish():
+    assert _warning_sensor(SALT_KEYWORDS, "salt_warning",
+                           [{"description": "Nivel de sal bajo"}]).state is True
+
+
+def test_salt_missing_description_is_safe():
+    """A warning dict without a description doesn't blow up."""
+    assert _warning_sensor(SALT_KEYWORDS, "salt_warning",
+                           [{}]).state is False
 
 
 # ---------------------------------------------------------------------------
 # ErieWarningBinarySensor — filter
 # ---------------------------------------------------------------------------
 
-def _warning_sensor(keyword, sensor_name, warnings):
-    c = MagicMock()
-    c.data = {"warnings": warnings}
-    return ErieWarningBinarySensor(c, "device_123", keyword, sensor_name)
-
-
 def test_filter_true_when_filter_in_description():
-    assert _warning_sensor("filter", "filter_warning",
+    assert _warning_sensor(FILTER_KEYWORDS, "filter_warning",
                            [{"description": "Filter Replacement Needed"}]).state is True
 
 
 def test_filter_false_when_different_warning():
-    assert _warning_sensor("filter", "filter_warning",
+    assert _warning_sensor(FILTER_KEYWORDS, "filter_warning",
                            [{"description": "Low Salt Level"}]).state is False
 
 
 def test_filter_false_when_no_warnings():
-    assert _warning_sensor("filter", "filter_warning", []).state is False
+    assert _warning_sensor(FILTER_KEYWORDS, "filter_warning", []).state is False
 
 
 def test_filter_false_when_data_is_none():
     c = MagicMock()
     c.data = None
-    assert ErieWarningBinarySensor(c, "device_123", "filter", "filter_warning").state is False
+    assert ErieWarningBinarySensor(c, "device_123", FILTER_KEYWORDS, "filter_warning").state is False
 
 
 def test_filter_case_insensitive():
-    assert _warning_sensor("filter", "filter_warning",
+    assert _warning_sensor(FILTER_KEYWORDS, "filter_warning",
                            [{"description": "FILTER CLOGGED"}]).state is True
 
 
+def test_filter_matches_italian():
+    assert _warning_sensor(FILTER_KEYWORDS, "filter_warning",
+                           [{"description": "Filtro da sostituire"}]).state is True
+
+
 def test_filter_unique_id():
-    assert _warning_sensor("filter", "filter_warning", []).unique_id == "device_123_filter_warning"
+    assert _warning_sensor(FILTER_KEYWORDS, "filter_warning", []).unique_id == "device_123_filter_warning"
 
 
 # ---------------------------------------------------------------------------
@@ -111,17 +132,27 @@ def test_filter_unique_id():
 # ---------------------------------------------------------------------------
 
 def test_service_true_when_service_in_description():
-    assert _warning_sensor("service", "service_warning",
+    assert _warning_sensor(SERVICE_KEYWORDS, "service_warning",
                            [{"description": "Service Required"}]).state is True
 
 
 def test_service_false_when_no_service_warning():
-    assert _warning_sensor("service", "service_warning",
+    assert _warning_sensor(SERVICE_KEYWORDS, "service_warning",
                            [{"description": "Low Salt Level"}]).state is False
 
 
+def test_service_matches_italian():
+    assert _warning_sensor(SERVICE_KEYWORDS, "service_warning",
+                           [{"description": "Assistenza necessaria"}]).state is True
+
+
+def test_service_matches_dutch():
+    assert _warning_sensor(SERVICE_KEYWORDS, "service_warning",
+                           [{"description": "Onderhoud vereist"}]).state is True
+
+
 def test_service_unique_id():
-    assert _warning_sensor("service", "service_warning",
+    assert _warning_sensor(SERVICE_KEYWORDS, "service_warning",
                            []).unique_id == "device_123_service_warning"
 
 
@@ -130,17 +161,27 @@ def test_service_unique_id():
 # ---------------------------------------------------------------------------
 
 def test_error_true_when_error_in_description():
-    assert _warning_sensor("error", "error_warning",
+    assert _warning_sensor(ERROR_KEYWORDS, "error_warning",
                            [{"description": "System Error Detected"}]).state is True
 
 
 def test_error_false_when_no_error_warning():
-    assert _warning_sensor("error", "error_warning",
+    assert _warning_sensor(ERROR_KEYWORDS, "error_warning",
                            [{"description": "Low Salt Level"}]).state is False
 
 
+def test_error_matches_italian():
+    assert _warning_sensor(ERROR_KEYWORDS, "error_warning",
+                           [{"description": "Errore di sistema"}]).state is True
+
+
+def test_error_matches_german():
+    assert _warning_sensor(ERROR_KEYWORDS, "error_warning",
+                           [{"description": "Fehler erkannt"}]).state is True
+
+
 def test_error_unique_id():
-    assert _warning_sensor("error", "error_warning",
+    assert _warning_sensor(ERROR_KEYWORDS, "error_warning",
                            []).unique_id == "device_123_error_warning"
 
 
